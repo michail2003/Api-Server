@@ -22,7 +22,7 @@ try{
     surname: surname
   });
   await newUser.save();
-  res.status(201).json({ message: 'User registered successfully' });
+  return res.status(201).json({ message: 'User registered successfully' });
 } catch (error) {
   res.status(400).json({ message: `user already exists` });
 }
