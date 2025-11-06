@@ -42,4 +42,17 @@ router.post('/postbook', async (req, res) => {
   }
 }
 );
+
+router.get('/book/:id', async (req, res) => {
+  const bookId = req.params.id;
+  try {
+    const book = await librat.findById(bookId);
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+    return res.status(200).json(book);
+  } catch (error) {
+    return res.status(400).json({ message: 'Error fetching book' });
+  }
+});
 module.exports = router;
