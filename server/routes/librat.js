@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const librat = require('../models/Liber');
 
+// Get all books
 router.get('/', async (req, res) => {
   try {
     const allBooks = await librat.find();
@@ -14,6 +15,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Add a new book
 router.post('/postbook', async (req, res) => {
   const { title, author, year, isbn, genre, img } = req.body;
   try {
@@ -43,6 +45,7 @@ router.post('/postbook', async (req, res) => {
 }
 );
 
+// Get a book by ID
 router.get('/book/:id', async (req, res) => {
   const bookId = req.params.id;
   try {
@@ -53,6 +56,30 @@ router.get('/book/:id', async (req, res) => {
     return res.status(200).json(book);
   } catch (error) {
     return res.status(400).json({ message: 'Error fetching book' });
+  }
+});
+
+// Update a book by ID
+router.put('/updatebook/:id', async (req, res) => {
+  const bookId = req.params.id;
+  const { title, author, year, isbn, genre, img,clicks} = req.body;
+  try {
+    if(!bookId){
+      return res.status(404).json({ message: 'Book Not Found' });
+    }
+    const updatedBook = await librat.findById(bookId);
+      updatedBook.title= title,
+      updatedBook.author= author,
+      updatedBook.year= year,
+      updatedBook.isbn= isbn,
+      updatedBook.genre= genre,
+      updatedBook.img= img
+      if (clicks) updatedBook.clicks = clicks + 1;
+      
+    await updatedBook.save();
+    return res.status(200).json({ message: `Book ${updatedBook.title} updated successfully` });
+  } catch (error) {
+    return res.status(400).json({ message: 'Error updating book' });
   }
 });
 module.exports = router;
